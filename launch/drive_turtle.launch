@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Argument to switch between autonomous and manual mode, default is false (manual mode) -->
+    <arg name="autonomous_drive" default="false" />
+
+    <!-- Launch turtlesim node -->
+    <node pkg="turtlesim" type="turtlesim_node" name="sim" output="screen">
+        <!-- Remap the /turtle1/cmd_vel topic -->
+        <remap from="/turtle1/cmd_vel" to="/turtle1/cmd_vel_remap" />
+    </node>
+
+    <!-- If autonomous_drive is true, launch the autonomous driving script (drive_in_circle.py) -->
+    <group if="$(eval arg('autonomous_drive') == 'true')">
+        <node pkg="ros_2110094" type="drive_in_circle.py" name="drive_in_circle" output="screen">
+            <!-- Remap the /turtle1/cmd_vel topic in the autonomous mode -->
+            <remap from="/turtle1/cmd_vel" to="/turtle1/cmd_vel_remap" />
+        </node>
+    </group>
+
+    <!-- -->
+    <group if="$(eval arg('autonomous_drive') == 'false')">
+        <node pkg="ros_2110094" type="teleop_gui.py" name="teleop_gui" output="screen">
+            <!---->
+            <remap from="/turtle1/cmd_vel" to="/turtle1/cmd_vel_remap" />
+        </node>
+    </group>
+</launch>
+
